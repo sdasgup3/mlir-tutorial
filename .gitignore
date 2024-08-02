@@ -3,3 +3,4 @@ bazel-bin
 bazel-mlir-tutorial
 bazel-out
 bazel-testlogs
+MODULE.bazel*
