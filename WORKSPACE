@@ -2,9 +2,9 @@ workspace(name = "mlir_tutorial")
 
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
-LLVM_COMMIT = "60a7d33106d3cd645d3100a8a935a1e3837f885d"
+LLVM_COMMIT = "0b92e70dfb7a3b49c24157d0a1b93d127f622683"
 
-LLVM_SHA256 = "4b3a416dc84123e106e87063e763dc32ecf78c8423497211e3f26109eeeab881"
+LLVM_SHA256 = "0a6d078cee61bcd60250f039a419235215096a564e0f5bb98f8872445fb09742"
 
 http_archive(
     name = "llvm-raw",

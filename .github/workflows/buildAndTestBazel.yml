@@ -1,36 +1,43 @@
-# This is a basic workflow to help you get started with Actions
+name: Bazel Build
 
-name: BuildBazel
-
-# Controls when the workflow will run
 on:
-  # Triggers the workflow on push or pull request events but only for the "main" branch
-  push:
-    branches: [ "main" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ main ]
+  push:
+    branches: [ main ]
 
-  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
-  build:
-    # The type of runner that the job will run on
+  bazel-build:
     runs-on: ubuntu-latest
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v4
+    - name: Checkout mlir-tutorial
+      uses: actions/checkout@v4
 
-      # Runs a single command using the runners shell
-      - name: Run a one-line script
-        run: echo Hello, world!
+    - name: Validate LLVM Commit
+      run: |
+        ./build_tools/github_actions/lint_llvm_commit.sh .
 
-      # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
-        run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
+    - name: Get LLVM Version
+      id: llvm-version
+      shell: bash
+      run: |
+        echo "version=$(cat ${{ github.workspace }}/build_tools/llvm_version.txt)" >> $GITHUB_OUTPUT
+
+    - name: Setup Bazelisk
+      uses: bazelbuild/setup-bazelisk@v2
+
+    - name: Mount Bazel Cache
+      uses: actions/cache@v3
+      with:
+        path: "~/.cache/bazel"
+        key: ${{ runner.os }}-mlir_tutorial__bazelbuild-${{ hashFiles('.bazelversion', '.bazelrc', 'WORKSPACE') }}
+        restore-keys: |
+          ${{ runner.os }}-mlir_tutorial__bazelbuild-
+
+    - name: Build mlir tutorial
+      shell: bash
+      run: |
+        ./build_tools/github_actions/ci_build_bazel.sh

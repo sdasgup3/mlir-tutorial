@@ -40,7 +40,7 @@ fi
 
 PATH_TO_STABLEHLO_ROOT="$1"
 PATH_TO_LLVM_VERSION_TXT="$PATH_TO_STABLEHLO_ROOT/build_tools/llvm_version.txt"
-PATH_TO_WORKSPACE="$PATH_TO_STABLEHLO_ROOT/WORKSPACE.bazel"
+PATH_TO_WORKSPACE="$PATH_TO_STABLEHLO_ROOT/WORKSPACE"
 
 ## Helper functions
 
@@ -99,6 +99,8 @@ if [[ $FORMAT_MODE == 'fix' ]]; then
 fi
 
 echo "Validating LLVM commit hash..."
+echo $(llvm_commit_from_version_txt)
+echo $(llvm_commit_from_workspace)
 LLVM_COMMIT_DIFF=$(llvm_commit_diff)
 if [[ -n "$LLVM_COMMIT_DIFF" ]]; then
   echo "Commit mismatch:"
